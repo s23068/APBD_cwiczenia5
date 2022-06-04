@@ -39,12 +39,12 @@ namespace APBD_cwiczenia5.Services
                         }
                     }
 
-                    using (var comm = new SqlCommand())
+                    using (var com = new SqlCommand())
                     {
 
-                        comm.CommandText = "select * from order where idProduct = " + warehouse.IdProduct + " and amount = " + warehouse.Amount;
+                        com.CommandText = "select * from order where idProduct = " + warehouse.IdProduct + " and amount = " + warehouse.Amount;
 
-                        using (SqlDataReader dr = await comm.ExecuteReaderAsync())
+                        using (SqlDataReader dr = await com.ExecuteReaderAsync())
                         {
                             if (dr.HasRows)
                             {
@@ -53,15 +53,15 @@ namespace APBD_cwiczenia5.Services
                         }
                     }
 
-                    using (var comm = new SqlCommand())
+                    using (var com = new SqlCommand())
                     {
 
                         if (order != 0)
                         {
 
-                            comm.CommandText = "select * from product_warehouse where idOrder = " + order;
+                            com.CommandText = "select * from product_warehouse where idOrder = " + order;
 
-                            int rows = comm.ExecuteNonQuery();
+                            int rows = com.ExecuteNonQuery();
                             if (rows != 0)
                             {
 
@@ -69,23 +69,23 @@ namespace APBD_cwiczenia5.Services
                         }
                     }
 
-                    using (var comm = new SqlCommand())
+                    using (var com = new SqlCommand())
                     {
-                        comm.CommandText = "update order set FulfilledAt = " + DateTime.Now + " where idorder = " + order;
-                        comm.ExecuteNonQuery();
+                        com.CommandText = "update order set FulfilledAt = " + DateTime.Now + " where idorder = " + order;
+                        com.ExecuteNonQuery();
                     }
 
-                    using (var comm = new SqlCommand())
+                    using (var com = new SqlCommand())
                     {
-                        comm.CommandText = "Select price from product where idproduct = " + warehouse.IdProduct;
-                        await comm.ExecuteNonQueryAsync();
-                        SqlDataReader dr = await comm.ExecuteReaderAsync();
+                        com.CommandText = "Select price from product where idproduct = " + warehouse.IdProduct;
+                        await com.ExecuteNonQueryAsync();
+                        SqlDataReader dr = await com.ExecuteReaderAsync();
                         if (dr.HasRows)
                         {
                             price = int.Parse(dr["price"].ToString());
                         }
-                        comm.CommandText = $"insert into Product_Warehouse(IdWarehouse, IdProduct, IdOrder, Amount, Price, CreatedAt) values( {warehouse.IdWarehouse}, {warehouse.IdProduct}, {order}, {warehouse.Amount}, {warehouse.Amount * price}, {warehouse.CreatedAt} );";
-                        await comm.ExecuteNonQueryAsync();
+                        com.CommandText = $"insert into Product_Warehouse(IdWarehouse, IdProduct, IdOrder, Amount, Price, CreatedAt) values( {warehouse.IdWarehouse}, {warehouse.IdProduct}, {order}, {warehouse.Amount}, {warehouse.Amount * price}, {warehouse.CreatedAt} );";
+                        await com.ExecuteNonQueryAsync();
                     }
 
                     await transaction.CommitAsync();
@@ -93,8 +93,6 @@ namespace APBD_cwiczenia5.Services
 
                 }
             }
-
-            return 1;
         }
     }
 }
